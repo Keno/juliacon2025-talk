@@ -300,3 +300,41 @@ end
     #link("mailto:keno@juliahub.com")[keno\@juliahub.com] • #box(baseline: 2pt)[#image("github-mark.svg", width: 16pt)] \@Keno
   ]
 ]
+
+// ============================================================================
+// TODO: Presentation Outline
+// ============================================================================
+// 
+// After the fake ending, continue with:
+// 
+// [ ] Implementation details
+//     - Fletcher diagram: Julia 1.11 data structures (Module -> Binding -> Value)
+//     - Fletcher diagram: Julia 1.12 data structures (Module -> Binding -> World-aware Value)
+//     - Show the specific fields and relationships between GlobalRef, Binding, and Module
+//     - Explain main binding partition kinds:
+//         - BPART_DEFINED (regular values)
+//         - BPART_GUARD (guard entries)
+//         - BPART_IMPORT (imported bindings)
+//         - How partitions enable world-aware binding evolution
+//
+// [ ] Semantic cleanup required for the change
+//     - The :latestworld concept
+//     - Binding resolvedness and when bindings become resolved
+//     - Import/using ambiguities and re-resolution mechanisms
+//     - How binding resolution interacts with world age
+//     - Implicit imports redesign (no longer store direct pointers)
+//     - Backdating mechanism for const bindings
+//     - Edge invalidation for redefined bindings
+//     - Method invalidation when bindings change
+//
+// [ ] Invalidation and edge verification
+//     - How invalidation works for binding changes
+//     - Edge tracking for method dependencies on bindings
+//     - Verification of edges during image loading
+//     - Optimizations:
+//         - Skipping invalidation for changes inference can't see
+//         - Merging multiple partitions during inference/codegen
+//         - Skipping image backedges during pkgimage generation
+//         - Guard binding ambiguity handling
+// 
+// ============================================================================
