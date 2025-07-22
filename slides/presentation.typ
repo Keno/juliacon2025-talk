@@ -1,15 +1,4 @@
 // JuliaCon 2025 Presentation - Constants are no longer constant
-// 
-// To reproduce the Julia 1.12 output on slide 6:
-// 1. Install Julia 1.12 using juliaup: `juliaup add 1.12`
-// 2. Start Julia 1.12: `julia +1.12`
-// 3. Run the following commands:
-//    julia> using Revise
-//    julia> includet("struct.jl")  # Original struct with x, y fields
-//    julia> porig = Point(1.0, 2.0)
-//    julia> # Edit struct.jl to add z::Float64 field
-//    julia> p = Point(1.0, 2.0, 3.0)
-//    julia> porig  # Shows @world(Point, ...)
 //
 // To build this presentation:
 // - Run `julia build.jl build` to generate PDF
@@ -243,6 +232,8 @@ end
 #pagebreak()
 
 // Slide 4: Solution in Julia 1.12
+// To reproduce the output shown below, see examples/reproduce_julia_12_output.jl
+// This script demonstrates the struct redefinition fix in Julia 1.12
 = Fixed in Julia 1.12!
 
 #grid(
