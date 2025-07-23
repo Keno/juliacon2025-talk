@@ -19,6 +19,7 @@ end
 command = ARGS[1]
 presentation_file = joinpath(@__DIR__, "slides", "presentation.typ")
 output_file = joinpath(@__DIR__, "slides", "presentation.pdf")
+png_output_file = joinpath(@__DIR__, "slides", "presentation{n}.png")
 
 if command == "build"
     println("Building presentation...")
@@ -40,6 +41,11 @@ elseif command == "watch"
             rethrow(e)
         end
     end
+    
+elseif command == "png"
+    println("Building presentation as PNG...")
+    run(`$(Typst_jll.typst()) compile $presentation_file $png_output_file --font-path fonts`)
+    println("✓ Built PNG slides")
     
 elseif command == "clean"
     println("Cleaning generated files...")

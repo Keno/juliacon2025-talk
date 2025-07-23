@@ -521,7 +521,7 @@ diagram(
  binding-node(pos: (1,0), value: text[1], value-type: text[Any], flags: text[const]),
  module-binding-def(),
  edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
- edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+ edge(<binding-dot.center>, (rel: (0, -0.3), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
 ),
 )
 
@@ -553,7 +553,7 @@ diagram(
  module-binding-def(),
  binding-node(pos: (1,0), value: text[1], value-type: text[Any], flags: text[-]),
  edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
- edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+ edge(<binding-dot.center>, (rel: (0, -0.3), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
 ),
 )
 #v(1em)
@@ -583,7 +583,7 @@ diagram(
  module-binding-def(),
  binding-node(pos: (1,0), value: text[1], value-type: text[Int], flags: text[-]),
  edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
- edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+ edge(<binding-dot.center>, (rel: (0, -0.3), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
 ),
 )
 #v(1em)
@@ -596,7 +596,7 @@ diagram(
 #pagebreak()
 
 
-= Example: Simple Import
+= Julia 1.11: Simple Import
 
 #grid(
   columns: (1.5fr, 2.5fr),
@@ -612,7 +612,6 @@ julia> x
 "),
   
 diagram(
- debug: 3,
  node-shape: rect,
  module-node(pos: (0,0), name: <Main>),
  binding-node(pos: (0,1), value: text[\#undef], value-type: text[\#undef], flags: text[imported], name: <Main-binding>),
@@ -620,9 +619,9 @@ diagram(
  module-node(pos: (1,0), body: text[A], name: <A>),
  binding-node(pos: (1,1), value: text[1], value-type: text[Any], flags: text[const], name: <A-binding>),
  module-binding-def(module: <A>, name: <Adot>),
- edge(<Maindot.center>, <Main-binding.north>, "-|>", layer: 1),
- edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
- edge(<Main-binding-dot.center>, <A-binding.west>, "-|>", layer: 1)
+ edge(<Maindot.center>, (rel: (0, 0.35), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.35), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, (rel: (0.2, 0), to: <Main-binding-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
 ),
 )
 #v(1em)
@@ -640,7 +639,7 @@ diagram(
   
   julia-terminal("julia> module A; const x = 1; end
 
-julia> module B; import ..A: x end
+julia> module B; import ..A: x; end
   
 julia> import .B: x
   
@@ -649,7 +648,6 @@ julia> x
 "),
   
 diagram(
- debug: 3,
  node-shape: rect,
  module-node(pos: (0,0), name: <Main>),
  binding-node(pos: (0,1), value: text[\#undef], value-type: text[\#undef], flags: text[imported], name: <Main-binding>),
@@ -660,11 +658,11 @@ diagram(
  module-node(pos: (2,0), body: text[A], name: <A>),
  binding-node(pos: (2,1), value: text[1], value-type: text[Any], flags: text[const], name: <A-binding>),
  module-binding-def(module: <A>, name: <Adot>),
- edge(<Maindot.center>, <Main-binding.north>, "-|>", layer: 1),
- edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
- edge(<Bdot.center>, <B-binding.north>, "-|>", layer: 1),
- edge(<Main-binding-dot.center>, <A-binding.west>, "-|>", layer: 1),
- edge(<B-binding-dot.center>, <A-binding.west>, "-|>", layer: 1)
+ edge(<Maindot.center>, (rel: (0, 0.35), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.35), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ edge(<Bdot.center>, (rel: (0, 0.35), to: <Bdot.center>), (vertical: (), horizontal: <B-binding.south>), <B-binding.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, (rel: (0.2, 0), to: <Main-binding-dot.center>), (rel: (0, 1.2), to: ()), (vertical: (rel: (0, 1.2), to: <Main-binding-dot.center>), horizontal: (rel: (0.2, 0), to: <B-binding-dot.center>)), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1),
+ edge(<B-binding-dot.center>, (rel: (0.2, 0), to: <B-binding-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
 ),
 )
 #v(1em)
@@ -697,7 +695,7 @@ diagram(
  module-binding-def(),
  binding-node(pos: (1,0), value: text[\#undef], value-type: text[\#undef], flags: text[-]),
  edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
- edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+ edge(<binding-dot.center>, (rel: (0, -0.3), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
 ),
 )
 
@@ -722,7 +720,7 @@ diagram(
  module-binding-def(),
  binding-node(pos: (1,0), value: text[\#undef], value-type: text[Int], flags: text[-]),
  edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
- edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+ edge(<binding-dot.center>, (rel: (0, -0.3), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
 ),
 )
 
@@ -754,8 +752,8 @@ diagram(
  module-node(pos: (1,0), body: text[A], name: <A>),
  binding-node(pos: (1,1), value: text[1], value-type: text[Any], flags: text[const export], name: <A-binding>),
  module-binding-def(module: <A>, name: <Adot>),
- edge(<Mainusing.center>, <A.west>, "-|>", layer: 1),
- edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
+ edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.35), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
 ),
 )
 
@@ -779,7 +777,6 @@ julia> x
 "),
   
 diagram(
- debug: 3,
  node-shape: rect,
  module-node(pos: (0,0), name: <Main>),
  binding-node(pos: (0,1), value: text[\#undef], value-type: text[\#undef], flags: text[-], name: <Main-binding>),
@@ -788,10 +785,10 @@ diagram(
  binding-node(pos: (1,1), value: text[1], value-type: text[Any], flags: text[const export], name: <A-binding>),
  module-binding-def(module: <A>, name: <Adot>),
  module-using-def(module: <Main>, ypos: 45%, name: <Mainusing>),
- edge(<Mainusing.center>, <A.west>, "-|>", layer: 1),
- edge(<Maindot.center>, <Main-binding.north>, "-|>", layer: 1),
- edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
- edge(<Main-binding-dot.center>, <A-binding.west>, "-|>", layer: 1)
+ edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
+ edge(<Maindot.center>, (rel: (0, 0.35), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.35), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, (rel: (0.2, 0), to: <Main-binding-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
 ),
 )
 
@@ -957,7 +954,7 @@ diagram(
  partition-node(pos: (2,0), value: text[1]),
  module-binding-def(),
  edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
- edge(<binding-dot.center>, <part.west>, "-|>", layer: 1)
+ edge(<binding-dot.center>, (rel: (0.25, 0), to: <binding-dot.center>), (horizontal: (), vertical: <part.west>), <part.west>, "-|>", layer: 1)
 ),
 )
 
@@ -982,7 +979,7 @@ diagram(
  partition-node(pos: (2,0), value: text[Any], kind: text[GLOBAL]),
  module-binding-def(),
  edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
- edge(<binding-dot.center>, <part.west>, "-|>", layer: 1)
+ edge(<binding-dot.center>, (rel: (0.25, 0), to: <binding-dot.center>), (horizontal: (), vertical: <part.west>), <part.west>, "-|>", layer: 1)
 ),
 )
 
@@ -1014,11 +1011,61 @@ diagram(
  binding112-node(pos: (1, 1), value: text[\#undef], name: <A-binding>),
  partition-node(pos: (1, 2), value: text[1], kind: text[CONST], name: <Apart>),
  module-binding-def(module: <A>, name: <Adot>),
- edge(<Maindot.center>, <Main-binding.north>, "-|>", layer: 1),
- edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
- edge(<Main-binding-dot.center>, <part.north>, "-|>", layer: 1),
- edge(<A-binding-dot.center>, <Apart.north>, "-|>", layer: 1),
- edge(<part-restriction-dot.center>, <A-binding.west>, "-|>", layer: 1)
+ edge(<Maindot.center>, (rel: (0, 0.25), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.25), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, (rel: (0, 0.18), to: <Main-binding-dot.center>), (vertical: (), horizontal: <part.north>), <part.north>, "-|>", layer: 1),
+ edge(<A-binding-dot.center>, (rel: (0, 0.18), to: <A-binding-dot.center>), (vertical: (), horizontal: <Apart.north>), <Apart.north>, "-|>", layer: 1),
+ edge(<part-restriction-dot.center>, (rel: (0.5, 0), to: <part-restriction-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
+),
+)
+
+#pagebreak()
+
+= Julia 1.12: More Complicated Import
+
+#grid(
+  columns: (1.5fr, 2.5fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> module A; const x = 1; end
+
+julia> module B; import ..A: x; end
+  
+julia> import .B: x
+  
+julia> x
+1
+", version: 1.12),
+  
+diagram(
+ node-shape: rect,
+ spacing: (1em, 1em),
+ module-node(pos: (0,0), name: <Main>),
+ binding112-node(pos: (0,1), value: text[\#undef], name: <Main-binding>),
+ partition-import-node(pos: (0, 2), kind: text[EXPLICIT], name: <Main-part>),
+ module-binding-def(module: <Main>, name: <Maindot>),
+ 
+ module-node(pos: (1,0), body: text[B], name: <B>),
+ binding112-node(pos: (1,1), value: text[\#undef], name: <B-binding>),
+ partition-import-node(pos: (1, 2), kind: text[EXPLICIT], name: <B-part>),
+ module-binding-def(module: <B>, name: <Bdot>),
+ 
+ module-node(pos: (2,0), body: text[A], name: <A>),
+ binding112-node(pos: (2,1), value: text[\#undef], name: <A-binding>),
+ partition-node(pos: (2, 2), value: text[1], kind: text[CONST], name: <A-part>),
+ module-binding-def(module: <A>, name: <Adot>),
+ 
+ edge(<Maindot.center>, (rel: (0, 0.7), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Bdot.center>, (rel: (0, 0.7), to: <Bdot.center>), (vertical: (), horizontal: <B-binding.south>), <B-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.7), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ 
+ edge(<Main-binding-dot.center>, (rel: (0, 0.5), to: <Main-binding-dot.center>), (vertical: (), horizontal: <Main-part.north>), <Main-part.north>, "-|>", layer: 1),
+ edge(<B-binding-dot.center>, (rel: (0, 0.5), to: <B-binding-dot.center>), (vertical: (), horizontal: <B-part.north>), <B-part.north>, "-|>", layer: 1),
+ edge(<A-binding-dot.center>, (rel: (0, 0.5), to: <A-binding-dot.center>), (vertical: (), horizontal: <A-part.north>), <A-part.north>, "-|>", layer: 1),
+ 
+ edge(<Main-part-restriction-dot.center>, (rel: (0.5, 0), to: <Main-part-restriction-dot.center>), (horizontal: (), vertical: <B-binding.west>), <B-binding.west>, "-|>", layer: 1),
+ edge(<B-part-restriction-dot.center>, (rel: (0.5, 0), to: <B-part-restriction-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
 ),
 )
 
