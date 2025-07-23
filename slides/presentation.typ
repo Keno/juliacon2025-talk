@@ -8,6 +8,7 @@
 #let julia-purple = rgb("#AA79C1")
 #let julia-green = rgb("#389826")
 #let julia-red = rgb("#CB3C33")
+#let julia-blue = rgb("#4063D8")
 
 // Page setup
 #set page(
@@ -32,8 +33,9 @@
 )
 
 // Import packages
-#import "@preview/fletcher:0.5.2" as fletcher: diagram, node, edge
+#import "@preview/fletcher:0.5.8" as fletcher: diagram, node, edge
 #import "@preview/ansi-render:0.6.1": *
+#import "@preview/pinit:0.2.2": *
 
 // Define dark theme for terminal
 #let terminal-theme = (
@@ -107,8 +109,7 @@
   #v(2em)
   
   #text(size: 24pt)[
-    Keno Fischer\
-    Core Julia Developer & CTO at JuliaHub
+    Keno Fischer
   ]
   
   #v(1em)
@@ -152,7 +153,7 @@ end
 
 #pagebreak()
 
-// Slide 2: Modification
+// Modification
 = Modifying the Struct
 
 #grid(
@@ -185,7 +186,7 @@ end
 
 #pagebreak()
 
-// Slide 3: Error message
+// Error message
 = The Problem
 
 #grid(
@@ -231,7 +232,7 @@ end
 
 #pagebreak()
 
-// Slide 4: Solution in Julia 1.12
+// Solution in Julia 1.12
 // To reproduce the output shown below, see examples/reproduce_julia_12_output.jl
 // This script demonstrates the struct redefinition fix in Julia 1.12
 = Fixed in Julia 1.12!
@@ -280,7 +281,7 @@ end
 
 #pagebreak()
 
-// Slide 5: Fake ending
+// Fake ending
 #align(center + horizon)[
   #text(size: 56pt, fill: julia-purple, weight: "bold")[
     Thank You!
@@ -300,6 +301,727 @@ end
     #link("mailto:keno@juliahub.com")[keno\@juliahub.com] • #box(baseline: 2pt)[#image("github-mark.svg", width: 16pt)] \@Keno
   ]
 ]
+
+#pagebreak()
+
+// Julia 1.11 Data Structures (Internal)
+= Julia 1.11: Binding Internals
+
+#align(center)[
+  #block(width: 95%)[
+    #grid(
+      columns: (1fr, 2fr, 2fr),
+      column-gutter: 1em,
+      align: horizon,
+      
+      // Module
+      block(
+        fill: julia-purple.lighten(90%),
+        stroke: 1pt + julia-purple,
+        radius: 5pt,
+        inset: 4pt,
+        width: 100%,
+      )[
+        #text(weight: "bold", size: 15pt)[Module]
+        #table(
+          columns: (1fr,),
+          stroke: (x, y) => (
+            left: 0pt,
+            right: 0pt,
+            top: if y == 0 { 1pt } else { 0.5pt },
+            bottom: 1pt,
+          ),
+          fill: (x, y) => if y == 0 { gray.lighten(90%) } else { white },
+          text(size: 12pt, weight: "bold")[Usings],
+          text(size: 12pt)[::Module],
+          text(size: 9pt)[...],
+        )
+        #table(
+          columns: (1fr, 1fr),
+          stroke: (x, y) => (
+            left: 0pt,
+            right: 0pt,
+            top: if y == 0 { 1pt } else { 0.5pt },
+            bottom: 1pt,
+          ),
+          fill: (x, y) => if y == 0 { gray.lighten(90%) } else { white },
+          text(size: 12pt, weight: "bold")[Name], text(size: 12pt, weight: "bold")[→],
+          text(size: 12pt)[::Symbol], text(size: 12pt)[::Binding],
+          text(size: 12pt)[...], text(size: 12pt)[...],
+        )
+      ],
+      
+      // Binding
+      block(
+        fill: julia-green.lighten(90%),
+        stroke: 1pt + julia-green,
+        radius: 5pt,
+        inset: 2pt,
+        width: 100%,
+      )[
+        #text(size: 13pt)[
+          #raw(lang: "julia", block: true, "struct Binding
+    value::Any
+    globalref::GlobalRef
+    owner::Binding
+    ty::Type
+    flags::UInt32
+    # constp:1
+    # exportp:1
+    # publicp:1
+    # imported: 1
+end")
+        ]
+      ],
+      
+      // GlobalRef
+      block()[
+        #block(
+          fill: julia-red.lighten(90%),
+          stroke: 1pt + julia-red,
+          radius: 5pt,
+          inset: 2pt,
+          width: 100%,
+        )[
+          #text(size: 13pt)[
+            #show raw: it => {
+              show regex("pin\d"): it => pin(eval(it.text.slice(3)))
+              it
+            }
+            #raw(lang: "julia", block: true, "struct GlobalRef
+    mod::Module
+    name::Symbol
+    binding::Binding
+  end")
+          ]
+        ]
+        #text(size: 12pt)[Almost like Binding, but can exist without entry in the binding table. May be merged into Binding in the future]
+      ]
+    )
+  ]
+]
+
+#pagebreak()
+
+// Example - Undefined (No Binding)
+= Example: Undefined Variable
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 2em,
+  
+  julia-terminal("julia> unknown_var
+ERROR: UndefVarError: `unknown_var` 
+not defined in `Main`
+
+julia> isdefined(Main, :unknown_var)
+false
+"),
+  
+  align(center)[
+      #block(
+        fill: julia-purple.lighten(90%),
+        stroke: 1pt + julia-purple,
+        radius: 5pt,
+        inset: 4pt,
+        width: 100%,
+      )[
+        #text(weight: "bold", size: 15pt)[Main]
+        #table(
+          columns: (1fr,),
+          stroke: (x, y) => (
+            left: 0pt,
+            right: 0pt,
+            top: if y == 0 { 1pt } else { 0.5pt },
+            bottom: 1pt,
+          ),
+          fill: (x, y) => if y == 0 { gray.lighten(90%) } else { white },
+          text(size: 12pt, weight: "bold")[Usings],
+        )
+        #table(
+          columns: (1fr, 1fr),
+          stroke: (x, y) => (
+            left: 0pt,
+            right: 0pt,
+            top: if y == 0 { 1pt } else { 0.5pt },
+            bottom: 1pt,
+          ),
+          fill: (x, y) => if y == 0 { gray.lighten(90%) } else { white },
+          text(size: 12pt, weight: "bold")[Name], text(size: 12pt, weight: "bold")[→],
+        )
+      ],
+  ]
+)
+
+#v(1em)
+#text(size: 24pt)[
+  No bindings in the table, no `usings` => UndefVarError.
+]
+
+#pagebreak()
+
+// Drawing definitions
+#let module-node(pos: (0, 0), body: text[Main], name: <module>, ..args) = (node(pos, width: 100pt, height: 70pt, block(
+        fill: julia-purple.lighten(90%),
+        stroke: 1pt + julia-purple,
+        radius: 5pt,
+        inset: 4pt,
+        width: 100%, height: 100%,
+      )[], name: name),
+ node(((name: name, anchor: "north"), 20%, (name: name, anchor: "south")), body))
+
+#let binding-node(pos: (1, 0), name: <binding>, value: text[1], value-type: text[Any], flags: text[-]) = (node(pos, corner-radius:5pt, width:120pt, height:80pt, block[#value\ #value-type\ #text(fill: red)[#flags]], name: name, fill: julia-green.lighten(90%),
+        stroke: 1pt + julia-green,
+),
+ node((rel: (-10pt, -5pt), to: (name: name, anchor: "north-east")), text(size: 40pt)[•], name: label(str(name) + "-dot")))
+
+#let binding112-node(pos: (1, 0), name: <binding>, value: text[1], flags: text[-]) = (node(pos, corner-radius:5pt, width:120pt, height:80pt, block[#value], name: name, fill: julia-green.lighten(90%),
+        stroke: 1pt + julia-green,
+),
+ node((rel: (-10pt, 10pt), to: (name: name, anchor: "south-east")), text(size: 40pt)[•], name: label(str(name) + "-dot")))
+
+#let partition-node(pos: (1, 0), name: <part>, value: text[1], kind: text[CONST]) = (node(pos, corner-radius:5pt, width:120pt, height:80pt, block[#text(weight: "bold")[#kind]\ #value], name: name, fill: julia-blue.lighten(90%),
+        stroke: 1pt + julia-blue,
+),
+ node((rel: (-10pt, 10pt), to: (name: name, anchor: "south-east")), text(size: 40pt)[•], name: label(str(name) + "-dot")))
+#let partition-import-node(pos: (1, 0), name: <part>, kind: text[EXPLICIT]) = (node(pos, corner-radius:5pt, width:120pt, height:80pt, block[#text(weight: "bold")[#kind]#v(2em)], name: name, fill: julia-blue.lighten(90%),
+        stroke: 1pt + julia-blue,
+),
+ node((rel: (-10pt, 10pt), to: (name: name, anchor: "south-east")), text(size: 40pt)[•], name: label(str(name) + "-dot")),
+ node(((name: name, anchor: "north"), 50%, (name: name, anchor: "south")), text(size: 40pt)[•], name: label(str(name) + "-restriction-dot")))
+
+
+#let module-binding-def(module: <module>, symbol: text[:x], name: <xdot>) = {
+  let pos-name = label(str(module) + "-guide")
+  return (
+  node(((name: module, anchor: "north"), 70%, (name: module, anchor: "south")), name: pos-name, text[.]),
+  node((rel: (-20pt, 0pt), to: (name: pos-name, anchor: "center")), text[:x]),
+  node((rel: (20pt, 0pt), to: (name: pos-name, anchor: "center")), text(size: 40pt)[•], name: name))
+}
+
+#let module-using-def(module: <module>, ypos: 70%, name: <xdot>) = node(((name: module, anchor: "north"), ypos, (name: module, anchor: "south")), name: name, text(size: 40pt)[•])
+
+= Example: Simple Constant
+
+#grid(
+  columns: (1fr, 3fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> const x = 1
+1
+
+julia> x
+1
+"),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0)),
+ binding-node(pos: (1,0), value: text[1], value-type: text[Any], flags: text[const]),
+ module-binding-def(),
+ edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
+ edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+),
+)
+
+#v(1em)
+#text(size: 24pt)[
+  Single Binding with value 1, const flag set, owner points to self.
+]
+
+#pagebreak()
+
+
+= Julia 1.11: Simple Global
+
+#grid(
+  columns: (1fr, 3fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> x = 1
+1
+
+julia> x
+1
+"),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0)),
+ module-binding-def(),
+ binding-node(pos: (1,0), value: text[1], value-type: text[Any], flags: text[-]),
+ edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
+ edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+),
+)
+#v(1em)
+#text(size: 24pt)[
+  Basically the same, but no const flag.
+]
+
+#pagebreak()
+
+= Example: Typed Global
+
+#grid(
+  columns: (1fr, 3fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> x::Int = 1
+1
+
+julia> x
+1
+"),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0)),
+ module-binding-def(),
+ binding-node(pos: (1,0), value: text[1], value-type: text[Int], flags: text[-]),
+ edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
+ edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+),
+)
+#v(1em)
+#text(size: 24pt)[
+  Sets binding type
+]
+
+
+
+#pagebreak()
+
+
+= Example: Simple Import
+
+#grid(
+  columns: (1.5fr, 2.5fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> module A; const x = 1; end
+
+julia> import .A: x
+  
+julia> x
+1
+"),
+  
+diagram(
+ debug: 3,
+ node-shape: rect,
+ module-node(pos: (0,0), name: <Main>),
+ binding-node(pos: (0,1), value: text[\#undef], value-type: text[\#undef], flags: text[imported], name: <Main-binding>),
+ module-binding-def(module: <Main>, name: <Maindot>),
+ module-node(pos: (1,0), body: text[A], name: <A>),
+ binding-node(pos: (1,1), value: text[1], value-type: text[Any], flags: text[const], name: <A-binding>),
+ module-binding-def(module: <A>, name: <Adot>),
+ edge(<Maindot.center>, <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, <A-binding.west>, "-|>", layer: 1)
+),
+)
+#v(1em)
+#text(size: 24pt)[
+  Owner field points to import.
+]
+
+
+= Example: More Complicated Import
+
+#grid(
+  columns: (1.5fr, 2.5fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> module A; const x = 1; end
+
+julia> module B; import ..A: x end
+  
+julia> import .B: x
+  
+julia> x
+1
+"),
+  
+diagram(
+ debug: 3,
+ node-shape: rect,
+ module-node(pos: (0,0), name: <Main>),
+ binding-node(pos: (0,1), value: text[\#undef], value-type: text[\#undef], flags: text[imported], name: <Main-binding>),
+ module-binding-def(module: <Main>, name: <Maindot>),
+ module-node(pos: (1,0), body: text[B], name: <B>),
+ binding-node(pos: (1,1), value: text[\#undef], value-type: text[\#undef], flags: text[imported], name: <B-binding>),
+ module-binding-def(module: <B>, name: <Bdot>),
+ module-node(pos: (2,0), body: text[A], name: <A>),
+ binding-node(pos: (2,1), value: text[1], value-type: text[Any], flags: text[const], name: <A-binding>),
+ module-binding-def(module: <A>, name: <Adot>),
+ edge(<Maindot.center>, <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
+ edge(<Bdot.center>, <B-binding.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, <A-binding.west>, "-|>", layer: 1),
+ edge(<B-binding-dot.center>, <A-binding.west>, "-|>", layer: 1)
+),
+)
+#v(1em)
+#text(size: 24pt)[
+  Owner field points to import.
+]
+
+#pagebreak()
+
+= Some Corner Cases
+
+#pagebreak()
+
+= Declared, but unassigned global
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> global x
+
+julia> x
+ERROR: UndefVarError: `x` not defined in `Main`
+"),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0)),
+ module-binding-def(),
+ binding-node(pos: (1,0), value: text[\#undef], value-type: text[\#undef], flags: text[-]),
+ edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
+ edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+),
+)
+
+#pagebreak()
+
+= Declared, but unassigned typed global
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> global::Int x
+
+julia> x
+ERROR: UndefVarError: `x` not defined in `Main`
+"),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0)),
+ module-binding-def(),
+ binding-node(pos: (1,0), value: text[\#undef], value-type: text[Int], flags: text[-]),
+ edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
+ edge(<binding-dot.center>, (rel: (0, -0.5), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
+),
+)
+
+#pagebreak()
+
+= Binding Resolution
+
+#pagebreak()
+
+= Binding Resolution
+
+
+#grid(
+  columns: (1.5fr, 2.5fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal(
+"julia> module A; const x = 1;
+                 export x; end
+
+julia> using .A
+"),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0), name: <Main>),
+ module-using-def(module: <Main>, ypos: 45%, name: <Mainusing>),
+ module-node(pos: (1,0), body: text[A], name: <A>),
+ binding-node(pos: (1,1), value: text[1], value-type: text[Any], flags: text[const export], name: <A-binding>),
+ module-binding-def(module: <A>, name: <Adot>),
+ edge(<Mainusing.center>, <A.west>, "-|>", layer: 1),
+ edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
+),
+)
+
+#pagebreak()
+
+= Binding Resolution (Resolved)
+
+
+#grid(
+  columns: (1.5fr, 2.5fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal(
+"julia> module A; const x = 1;
+                 export x; end
+
+julia> using .A
+
+julia> x
+"),
+  
+diagram(
+ debug: 3,
+ node-shape: rect,
+ module-node(pos: (0,0), name: <Main>),
+ binding-node(pos: (0,1), value: text[\#undef], value-type: text[\#undef], flags: text[-], name: <Main-binding>),
+ module-binding-def(module: <Main>, name: <Maindot>),
+ module-node(pos: (1,0), body: text[A], name: <A>),
+ binding-node(pos: (1,1), value: text[1], value-type: text[Any], flags: text[const export], name: <A-binding>),
+ module-binding-def(module: <A>, name: <Adot>),
+ module-using-def(module: <Main>, ypos: 45%, name: <Mainusing>),
+ edge(<Mainusing.center>, <A.west>, "-|>", layer: 1),
+ edge(<Maindot.center>, <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, <A-binding.west>, "-|>", layer: 1)
+),
+)
+
+Problem: When does binding resolution happen?
+
+= The Compiler Resolves Bindings (Sometimes)
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+julia-terminal("julia> module A; const x = 1; export x; end
+Main.A
+
+julia> using .A
+
+julia> f() = x
+f (generic function with 1 method)
+
+julia> for _ in false x end
+
+julia> const x = 2
+ERROR: cannot assign a value to imported variable A.x from module Main
+Stacktrace:
+ [1] top-level scope
+   @ REPL[5]:1
+"),
+  
+julia-terminal("julia> module A; const x = 1; export x; end
+Main.A
+
+julia> using .A
+
+julia> f() = x
+f (generic function with 1 method)
+
+julia> while false x end
+
+julia> const x = 2
+2
+"),
+)
+  
+
+#pagebreak()
+
+= Julia 1.12: Binding Internals
+
+#align(center)[
+  #block(width: 95%)[
+    #grid(
+      columns: (1fr, 2fr, 2.5fr),
+      column-gutter: 1em,
+      align: horizon,
+      
+      // Module
+      block(
+        fill: julia-purple.lighten(90%),
+        stroke: 1pt + julia-purple,
+        radius: 5pt,
+        inset: 4pt,
+        width: 100%,
+      )[
+        #text(weight: "bold", size: 15pt)[Module]
+        #table(
+          columns: (1fr,),
+          stroke: (x, y) => (
+            left: 0pt,
+            right: 0pt,
+            top: if y == 0 { 1pt } else { 0.5pt },
+            bottom: 1pt,
+          ),
+          fill: (x, y) => if y == 0 { gray.lighten(90%) } else { white },
+          text(size: 12pt, weight: "bold")[Usings],
+          text(size: 12pt)[::Module],
+          text(size: 9pt)[...],
+        )
+        #table(
+          columns: (1fr, 1fr),
+          stroke: (x, y) => (
+            left: 0pt,
+            right: 0pt,
+            top: if y == 0 { 1pt } else { 0.5pt },
+            bottom: 1pt,
+          ),
+          fill: (x, y) => if y == 0 { gray.lighten(90%) } else { white },
+          text(size: 12pt, weight: "bold")[Name], text(size: 12pt, weight: "bold")[→],
+          text(size: 12pt)[::Symbol], text(size: 12pt)[::Binding],
+          text(size: 12pt)[...], text(size: 12pt)[...],
+        )
+      ],
+      
+      // Binding
+      block(
+        fill: julia-green.lighten(90%),
+        stroke: 1pt + julia-green,
+        radius: 5pt,
+        inset: 2pt,
+        width: 100%,
+      )[
+        #text(size: 13pt)[
+          #raw(lang: "julia", block: true, "struct Binding
+  value::Any
+  globalref::
+    GlobalRef
+  partitions::
+    BindingPartition
+  backedges::
+    Vetor{Binding}
+  flags::UInt8
+end")
+        ]
+      ],
+      
+      // BindingPartitio
+      block()[
+        #block(
+          fill: julia-blue.lighten(90%),
+          stroke: 1pt + julia-blue,
+          radius: 5pt,
+          inset: 2pt,
+          width: 100%,
+        )[
+          #text(size: 13pt)[
+            #show raw: it => {
+              show regex("pin\d"): it => pin(eval(it.text.slice(3)))
+              it
+            }
+            #raw(lang: "julia", block: true, 
+"struct BindingPartition
+  kind::Csize_t
+  restriction::Any        
+  min_world::Csize_t
+  max_world::Csize_t
+  next::BindingPartition
+end")
+          ]
+        ]
+      ]
+    )
+  ]
+]
+
+= Julia 1.12: Simple Constant
+
+#grid(
+  columns: (1fr, 3fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> const x = 1
+1
+
+julia> x
+1
+", version: 1.12),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0)),
+ binding112-node(pos: (1,0), value: text[\#undef]),
+ partition-node(pos: (2,0), value: text[1]),
+ module-binding-def(),
+ edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
+ edge(<binding-dot.center>, <part.west>, "-|>", layer: 1)
+),
+)
+
+= Julia 1.12: Simple Global
+
+#grid(
+  columns: (1fr, 3fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> global x = 1
+1
+
+julia> x
+1
+", version: 1.12),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0)),
+ binding112-node(pos: (1,0), value: text[1]),
+ partition-node(pos: (2,0), value: text[Any], kind: text[GLOBAL]),
+ module-binding-def(),
+ edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
+ edge(<binding-dot.center>, <part.west>, "-|>", layer: 1)
+),
+)
+
+#pagebreak()
+
+= Julia 1.12: Simple Import
+
+#grid(
+  columns: (1.5fr, 2.5fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> module A; const x = 1; end
+
+julia> import .A: x
+  
+julia> x
+1
+"),
+  
+diagram(
+ node-shape: rect,
+ spacing: (1em, 1em),
+ module-node(pos: (0,0), name: <Main>),
+ binding112-node(pos: (0,1), value: text[\#undef], name: <Main-binding>),
+ partition-import-node(pos: (0, 2), kind: text[EXPLICIT]),
+ module-binding-def(module: <Main>, name: <Maindot>),
+ module-node(pos: (1,0), body: text[A], name: <A>),
+ binding112-node(pos: (1, 1), value: text[\#undef], name: <A-binding>),
+ partition-node(pos: (1, 2), value: text[1], kind: text[CONST], name: <Apart>),
+ module-binding-def(module: <A>, name: <Adot>),
+ edge(<Maindot.center>, <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, <A-binding.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, <part.north>, "-|>", layer: 1),
+ edge(<A-binding-dot.center>, <Apart.north>, "-|>", layer: 1),
+ edge(<part-restriction-dot.center>, <A-binding.west>, "-|>", layer: 1)
+),
+)
+
 
 // ============================================================================
 // TODO: Presentation Outline
