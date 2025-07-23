@@ -1056,13 +1056,13 @@ diagram(
  partition-node(pos: (2, 2), value: text[1], kind: text[CONST], name: <A-part>),
  module-binding-def(module: <A>, name: <Adot>),
  
- edge(<Maindot.center>, (rel: (0, 0.7), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
- edge(<Bdot.center>, (rel: (0, 0.7), to: <Bdot.center>), (vertical: (), horizontal: <B-binding.south>), <B-binding.north>, "-|>", layer: 1),
- edge(<Adot.center>, (rel: (0, 0.7), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ edge(<Maindot.center>, (rel: (0, 0.25), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Bdot.center>, (rel: (0, 0.25), to: <Bdot.center>), (vertical: (), horizontal: <B-binding.south>), <B-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.25), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
  
- edge(<Main-binding-dot.center>, (rel: (0, 0.5), to: <Main-binding-dot.center>), (vertical: (), horizontal: <Main-part.north>), <Main-part.north>, "-|>", layer: 1),
- edge(<B-binding-dot.center>, (rel: (0, 0.5), to: <B-binding-dot.center>), (vertical: (), horizontal: <B-part.north>), <B-part.north>, "-|>", layer: 1),
- edge(<A-binding-dot.center>, (rel: (0, 0.5), to: <A-binding-dot.center>), (vertical: (), horizontal: <A-part.north>), <A-part.north>, "-|>", layer: 1),
+ edge(<Main-binding-dot.center>, (rel: (0, 0.18), to: <Main-binding-dot.center>), (vertical: (), horizontal: <Main-part.north>), <Main-part.north>, "-|>", layer: 1),
+ edge(<B-binding-dot.center>, (rel: (0, 0.18), to: <B-binding-dot.center>), (vertical: (), horizontal: <B-part.north>), <B-part.north>, "-|>", layer: 1),
+ edge(<A-binding-dot.center>, (rel: (0, 0.18), to: <A-binding-dot.center>), (vertical: (), horizontal: <A-part.north>), <A-part.north>, "-|>", layer: 1),
  
  edge(<Main-part-restriction-dot.center>, (rel: (0.5, 0), to: <Main-part-restriction-dot.center>), (horizontal: (), vertical: <B-binding.west>), <B-binding.west>, "-|>", layer: 1),
  edge(<B-part-restriction-dot.center>, (rel: (0.5, 0), to: <B-part-restriction-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
