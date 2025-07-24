@@ -475,16 +475,16 @@ false
 ),
  node((rel: (-10pt, -5pt), to: (name: name, anchor: "north-east")), text(size: 40pt)[•], name: label(str(name) + "-dot")))
 
-#let binding112-node(pos: (1, 0), name: <binding>, value: text[1], flags: text[-]) = (node(pos, corner-radius:5pt, width:120pt, height:80pt, block[#value], name: name, fill: julia-green.lighten(90%),
+#let binding112-node(pos: (1, 0), name: <binding>, value: text[1], flags: text[-]) = (node(pos, corner-radius:5pt, width:120pt, height:30pt, block[#value], name: name, fill: julia-green.lighten(90%),
         stroke: 1pt + julia-green,
 ),
  node((rel: (-10pt, 10pt), to: (name: name, anchor: "south-east")), text(size: 40pt)[•], name: label(str(name) + "-dot")))
 
-#let partition-node(pos: (1, 0), name: <part>, value: text[1], kind: text[CONST]) = (node(pos, corner-radius:5pt, width:120pt, height:80pt, block[#text(weight: "bold")[#kind]\ #value], name: name, fill: julia-blue.lighten(90%),
+#let partition-node(..args, pos: (0, 1), name: <part>, value: text[1], kind: text[CONST], height: 80pt) = (node(..args, pos, corner-radius:5pt, width:120pt, height: height, block[#text(weight: "bold")[#kind]\ #value], name: name, fill: julia-blue.lighten(90%),
         stroke: 1pt + julia-blue,
 ),
  node((rel: (-10pt, 10pt), to: (name: name, anchor: "south-east")), text(size: 40pt)[•], name: label(str(name) + "-dot")))
-#let partition-import-node(pos: (1, 0), name: <part>, kind: text[EXPLICIT]) = (node(pos, corner-radius:5pt, width:120pt, height:80pt, block[#text(weight: "bold")[#kind]#v(2em)], name: name, fill: julia-blue.lighten(90%),
+#let partition-import-node(..args, pos: (1, 0), name: <part>, kind: text[EXPLICIT], height: 80pt) = (node(..args, pos, corner-radius:5pt, width:120pt, height: height, block[#text(weight: "bold")[#kind]#v(1em)], name: name, fill: julia-blue.lighten(90%),
         stroke: 1pt + julia-blue,
 ),
  node((rel: (-10pt, 10pt), to: (name: name, anchor: "south-east")), text(size: 40pt)[•], name: label(str(name) + "-dot")),
@@ -985,6 +985,41 @@ diagram(
 
 #pagebreak()
 
+= Julia 1.12: Redefined Constant
+
+#grid(
+  columns: (1fr, 3fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> const x = 1
+1
+
+julia> const x = 2
+2
+
+julia> x
+2
+", version: 1.12),
+  
+diagram(
+ node-shape: rect,
+ module-node(pos: (0,0)),
+ binding112-node(pos: (1,0), value: text[\#undef]),
+ partition-node(pos: (2,1), value: text[1], kind: text[CONST], name: <part1>),
+ partition-node(pos: (2,0), value: text[2], kind: text[CONST], name: <part2>),
+ module-binding-def(),
+ edge(<xdot.center>, (rel: (0, 0.7), to: <xdot.center>), (vertical: (), horizontal: <binding.south>), <binding.south>, "-|>", layer: 1),
+ edge(<binding-dot.center>, (rel: (0.25, 0), to: <binding-dot.center>), (horizontal: (), vertical: <part2.west>), <part2.west>, "-|>", layer: 1),
+ // Connect second partition to first (newer points to older)
+ edge(<part2-dot.center>, (rel: (0, 0.2), to: <part2-dot.center>), (vertical: (), horizontal: <part1.north>), <part1.north>, "-|>", layer: 1),
+ // Red dashed line perpendicular between partitions
+ edge((1.5, 0.5), (2.5, 0.5), "--", stroke: (paint: julia-red, thickness: 2pt, dash: "dashed"), label-side: right, label-pos: 0.275, label: text(fill: julia-red)[redefine x] ),
+),
+)
+
+#pagebreak()
+
 = Julia 1.12: Simple Import
 
 #grid(
@@ -1069,6 +1104,164 @@ diagram(
 ),
 )
 
+#pagebreak()
+
+= Julia 1.12: Implicitly Resolved Global
+
+#grid(
+  columns: (1.5fr, 2.5fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> module A; x = 1; end
+
+julia> using .A
+
+julia> x
+1
+", version: 1.12),
+  
+diagram(
+ node-shape: rect,
+ spacing: (1em, 1em),
+ module-node(pos: (0,0), name: <Main>),
+ binding112-node(pos: (0,1), value: text[\#undef], name: <Main-binding>),
+ partition-import-node(pos: (0, 2), kind: text(size: 11pt)[IMPLICIT_GLOBAL], name: <Main-part>),
+ module-binding-def(module: <Main>, name: <Maindot>),
+ module-using-def(module: <Main>, ypos: 45%, name: <Mainusing>),
+ 
+ module-node(pos: (1,0), body: text[A], name: <A>),
+ binding112-node(pos: (1,1), value: text[\#undef], name: <A-binding>),
+ partition-node(pos: (1, 2), value: text[1], kind: text[GLOBAL], name: <A-part>),
+ module-binding-def(module: <A>, name: <Adot>),
+ 
+ edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
+ 
+ edge(<Maindot.center>, (rel: (0, 0.25), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.25), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ 
+ edge(<Main-binding-dot.center>, (rel: (0, 0.18), to: <Main-binding-dot.center>), (vertical: (), horizontal: <Main-part.north>), <Main-part.north>, "-|>", layer: 1),
+ edge(<A-binding-dot.center>, (rel: (0, 0.18), to: <A-binding-dot.center>), (vertical: (), horizontal: <A-part.north>), <A-part.north>, "-|>", layer: 1),
+ 
+ edge(<Main-part-restriction-dot.center>, (rel: (0.5, 0), to: <Main-part-restriction-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
+),
+)
+
+#pagebreak()
+
+= Julia 1.12: Implicitly Resolved Constant
+
+#grid(
+  columns: (1.5fr, 2.5fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> module A; const x = 1; end
+
+julia> using .A
+
+julia> x
+1
+", version: 1.12),
+  
+diagram(
+ node-shape: rect,
+ spacing: (1em, 1em),
+ module-node(pos: (0,0), name: <Main>),
+ binding112-node(pos: (0,1), value: text[\#undef], name: <Main-binding>),
+ partition-node(pos: (0, 2), value: text[1], kind: text(size: 11pt)[IMPLICIT_CONST], name: <Main-part>),
+ module-binding-def(module: <Main>, name: <Maindot>),
+ module-using-def(module: <Main>, ypos: 45%, name: <Mainusing>),
+ 
+ module-node(pos: (1,0), body: text[A], name: <A>),
+ binding112-node(pos: (1,1), value: text[\#undef], name: <A-binding>),
+ partition-node(pos: (1, 2), value: text[1], kind: text[CONST], name: <A-part>),
+ module-binding-def(module: <A>, name: <Adot>),
+ 
+ edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
+ 
+ edge(<Maindot.center>, (rel: (0, 0.25), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.25), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ 
+ edge(<Main-binding-dot.center>, (rel: (0, 0.18), to: <Main-binding-dot.center>), (vertical: (), horizontal: <Main-part.north>), <Main-part.north>, "-|>", layer: 1),
+ edge(<A-binding-dot.center>, (rel: (0, 0.18), to: <A-binding-dot.center>), (vertical: (), horizontal: <A-part.north>), <A-part.north>, "-|>", layer: 1),
+ 
+ // No import edge for IMPLICIT_CONST - it copies the value instead
+),
+)
+
+#pagebreak()
+
+= Julia 1.12: Complex Using example
+
+// World age boundaries
+#let age_boundary(parttop, partbot, partleft, partright, body: text[], ..args) = {
+  let mid = ((name: parttop, anchor: "south"), 50%, (name: partbot, anchor: "north"))
+  return edge((horizontal: (name: partleft, anchor: "west"), vertical: mid),
+       (horizontal: (name: partright, anchor: "east"), vertical: mid),
+       "--", stroke: (paint: julia-red, thickness: 2pt, dash: "dashed"), label-side: left, label-pos: 50%, label: text(fill: julia-red, size: 9pt)[#body], ..args)
+}
+
+#grid(
+  columns: (1.2fr, 2.8fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> module A; global x; end
+
+julia> using .A
+
+julia> Core.eval(A, :(const x = 1;))
+1
+
+julia> x
+1
+", version: 1.12),
+  
+diagram(
+ node-shape: rect,
+ spacing: (3em, 0.48em),
+ module-node(pos: (0,0), name: <Main>),
+ binding112-node(pos: (0,1), value: text[\#undef], name: <Main-binding>),
+ // Main partitions (newest to oldest, bottom to top)
+ partition-node(pos: (0, 2), value: text[1], kind: text(size: 10pt)[IMPLICIT_CONST], height: 40pt, name: <Main-part3>),
+ partition-import-node(pos: (0, 3), kind: text(size: 10pt)[IMPLICIT_GLOBAL], height: 40pt, name: <Main-part2>),
+ partition-node(enclose: ((0, 4), (horizontal: (0, 5), vertical: <A-part1.south>)), pos: (0, 4.5), inset: 0pt, value: text[\#undef], kind: text[GUARD], name: <Main-part1>),
+ module-binding-def(module: <Main>, name: <Maindot>),
+ module-using-def(module: <Main>, ypos: 45%, name: <Mainusing>),
+ 
+ module-node(pos: (1,0), body: text[A], name: <A>),
+ binding112-node(pos: (1,1), value: text[\#undef], name: <A-binding>),
+ // A partitions (newest to oldest, bottom to top)
+ partition-node(pos: (1, 2), value: text[1], kind: text[CONST], height: 40pt, name: <A-part3>),
+ partition-node(enclose: ((horizontal: (1, 3.5), vertical: <Main-part2.north>), (1,4)), inset: 0pt, pos: (1,4), value: text[\#undef], kind: text[DECLARED], height: 40pt, name: <A-part2>),
+ partition-node(pos: (1, 5), value: text[\#undef], kind: text[GUARD], height: 40pt, name: <A-part1>),
+ module-binding-def(module: <A>, name: <Adot>),
+
+ node((0, 4), text[.]),
+ 
+ edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
+ 
+ edge(<Maindot.center>, (rel: (0, 0.25), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Adot.center>, (rel: (0, 0.25), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ 
+ edge(<Main-binding-dot.center>, (rel: (0, 0.35), to: <Main-binding-dot.center>), (vertical: (), horizontal: <Main-part3.north>), <Main-part3.north>, "-|>", layer: 1),
+ edge(<A-binding-dot.center>, (rel: (0, 0.35), to: <A-binding-dot.center>), (vertical: (), horizontal: <A-part3.north>), <A-part3.north>, "-|>", layer: 1),
+ 
+ // Chain partitions (newest points to older)
+ edge(<Main-part3-dot.center>, (rel: (0, 0.3), to: <Main-part3-dot.center>), (vertical: (), horizontal: <Main-part2.north>), <Main-part2.north>, "-|>", layer: 1),
+ edge(<Main-part2-dot.center>, (rel: (0, 0.3), to: <Main-part2-dot.center>), (vertical: (), horizontal: <Main-part1.north>), <Main-part1.north>, "-|>", layer: 1),
+ edge(<A-part3-dot.center>, (rel: (0, 0.3), to: <A-part3-dot.center>), (vertical: (), horizontal: <A-part2.north>), <A-part2.north>, "-|>", layer: 1),
+ edge(<A-part2-dot.center>, (rel: (0, 0.3), to: <A-part2-dot.center>), (vertical: (), horizontal: <A-part1.north>), <A-part1.north>, "-|>", layer: 1),
+ 
+ // Import edge from implicit global
+ edge(<Main-part2-restriction-dot.center>, (rel: (0.5, 0), to: <Main-part2-restriction-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1),
+ 
+ age_boundary(<Main-part3>, <Main-part2>, <Main-part3>, <A-part1>, body: text[const x = 1]),
+ age_boundary(<Main-part2>, <Main-part1>, <Main-part3>, <A-part1>, body: text[using .A]),
+ age_boundary(<A-part2>, <Main-part1>, <Main-part3>, <A-part1>, body: text[global A]),
+),
+)
 
 // ============================================================================
 // TODO: Presentation Outline
