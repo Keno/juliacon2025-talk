@@ -822,7 +822,7 @@ Main.A
 \u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mf() = x
 f (generic function with 1 method)
 
-\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mfor _ in false x end
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mfor _ in [] x end
 
 \u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 2
 \u{1b}[91mERROR: \u{1b}[39mcannot assign a value to imported variable A.x from module Main
@@ -1323,7 +1323,7 @@ Main.A
 \u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mf() = x
 f (generic function with 1 method)
 
-\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mfor _ in false x end
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mfor _ in [] x end
 
 \u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 2
 2
