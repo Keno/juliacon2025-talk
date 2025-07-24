@@ -111,13 +111,11 @@
   #text(size: 24pt)[
     Keno Fischer
   ]
-  
-  #v(1em)
-  
-  #text(size: 20pt)[
-    July 24, 2025 | 10:00-10:30\
-    Lawrence Room 120 - REPL Main Stage
+  #v(0.1em)
+  #text(size: 8pt)[
+    Also Claude, but it wasn't very good at slides
   ]
+
 ]
 
 #pagebreak()
@@ -494,7 +492,7 @@ false
 #let module-binding-def(module: <module>, symbol: text[:x], name: <xdot>) = {
   let pos-name = label(str(module) + "-guide")
   return (
-  node(((name: module, anchor: "north"), 70%, (name: module, anchor: "south")), name: pos-name, text[.]),
+  node(((name: module, anchor: "north"), 70%, (name: module, anchor: "south")), name: pos-name, text[.], layer: -1),
   node((rel: (-20pt, 0pt), to: (name: pos-name, anchor: "center")), text[:x]),
   node((rel: (20pt, 0pt), to: (name: pos-name, anchor: "center")), text(size: 40pt)[•], name: name))
 }
@@ -672,10 +670,6 @@ diagram(
 
 #pagebreak()
 
-= Some Corner Cases
-
-#pagebreak()
-
 = Declared, but unassigned global
 
 #grid(
@@ -698,8 +692,6 @@ diagram(
  edge(<binding-dot.center>, (rel: (0, -0.3), to: <binding-dot.center>), (vertical: (), horizontal: <binding.north>), <binding.north>, "-|>", layer: 1)
 ),
 )
-
-#pagebreak()
 
 = Declared, but unassigned typed global
 
@@ -726,7 +718,13 @@ diagram(
 
 #pagebreak()
 
-= Binding Resolution
+#v(1fr)
+#align(center + horizon)[
+  #text(size: 48pt, fill: julia-purple, weight: "bold")[
+    Binding Resolution
+  ]
+]
+#v(1fr)
 
 #pagebreak()
 
@@ -841,7 +839,7 @@ julia> const x = 2
 #align(center)[
   #block(width: 95%)[
     #grid(
-      columns: (1fr, 2fr, 2.5fr),
+      columns: (1.2fr, 2fr, 2.5fr),
       column-gutter: 1em,
       align: horizon,
       
@@ -855,7 +853,7 @@ julia> const x = 2
       )[
         #text(weight: "bold", size: 15pt)[Module]
         #table(
-          columns: (1fr,),
+          columns: (1fr,1fr,1fr),
           stroke: (x, y) => (
             left: 0pt,
             right: 0pt,
@@ -864,8 +862,10 @@ julia> const x = 2
           ),
           fill: (x, y) => if y == 0 { gray.lighten(90%) } else { white },
           text(size: 12pt, weight: "bold")[Usings],
-          text(size: 12pt)[::Module],
-          text(size: 9pt)[...],
+          text(size: 12pt, weight: "bold")[Min],
+          text(size: 12pt, weight: "bold")[Max],
+          text(size: 12pt)[::Module],text(size: 12pt)[::Csize_t],text(size: 12pt)[::Csize_t],
+          text(size: 9pt)[...],text(size: 9pt)[...],text(size: 9pt)[...]
         )
         #table(
           columns: (1fr, 1fr),
@@ -1192,15 +1192,17 @@ diagram(
 
 #pagebreak()
 
+
 = Julia 1.12: Complex Using example
 
-// World age boundaries
-#let age_boundary(parttop, partbot, partleft, partright, body: text[], ..args) = {
+ // World age boundaries
+ #let age_boundary(parttop, partbot, partleft, partright, body: text[], ..args) = {
   let mid = ((name: parttop, anchor: "south"), 50%, (name: partbot, anchor: "north"))
   return edge((horizontal: (name: partleft, anchor: "west"), vertical: mid),
-       (horizontal: (name: partright, anchor: "east"), vertical: mid),
+       (horizontal: (name: partright, anchor: "east"), vertical: mid), layer: 1, snap-to: (none, none),
        "--", stroke: (paint: julia-red, thickness: 2pt, dash: "dashed"), label-side: left, label-pos: 50%, label: text(fill: julia-red, size: 9pt)[#body], ..args)
 }
+
 
 #grid(
   columns: (1.2fr, 2.8fr),
@@ -1238,7 +1240,7 @@ diagram(
  partition-node(pos: (1, 5), value: text[\#undef], kind: text[GUARD], height: 40pt, name: <A-part1>),
  module-binding-def(module: <A>, name: <Adot>),
 
- node((0, 4), text[.]),
+ node((0, 4), text[.], layer: -1),
  
  edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
  
@@ -1259,44 +1261,191 @@ diagram(
  
  age_boundary(<Main-part3>, <Main-part2>, <Main-part3>, <A-part1>, body: text[const x = 1]),
  age_boundary(<Main-part2>, <Main-part1>, <Main-part3>, <A-part1>, body: text[using .A]),
- age_boundary(<A-part2>, <Main-part1>, <Main-part3>, <A-part1>, body: text[global A]),
+ age_boundary(<A-part2>, <A-part1>, <Main-part3>, <A-part1>, body: text[global x]),
 ),
 )
 
-// ============================================================================
-// TODO: Presentation Outline
-// ============================================================================
-// 
-// After the fake ending, continue with:
-// 
-// [ ] Implementation details
-//     - Fletcher diagram: Julia 1.11 data structures (Module -> Binding -> Value)
-//     - Fletcher diagram: Julia 1.12 data structures (Module -> Binding -> World-aware Value)
-//     - Show the specific fields and relationships between GlobalRef, Binding, and Module
-//     - Explain main binding partition kinds:
-//         - BPART_DEFINED (regular values)
-//         - BPART_GUARD (guard entries)
-//         - BPART_IMPORT (imported bindings)
-//         - How partitions enable world-aware binding evolution
-//
-// [ ] Semantic cleanup required for the change
-//     - The :latestworld concept
-//     - Binding resolvedness and when bindings become resolved
-//     - Import/using ambiguities and re-resolution mechanisms
-//     - How binding resolution interacts with world age
-//     - Implicit imports redesign (no longer store direct pointers)
-//     - Backdating mechanism for const bindings
-//     - Edge invalidation for redefined bindings
-//     - Method invalidation when bindings change
-//
-// [ ] Invalidation and edge verification
-//     - How invalidation works for binding changes
-//     - Edge tracking for method dependencies on bindings
-//     - Verification of edges during image loading
-//     - Optimizations:
-//         - Skipping invalidation for changes inference can't see
-//         - Merging multiple partitions during inference/codegen
-//         - Skipping image backedges during pkgimage generation
-//         - Guard binding ambiguity handling
-// 
-// ============================================================================
+#pagebreak()
+
+= Julia 1.12: Semantic Binding Resolution
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 2em,
+  align: horizon,
+  
+  julia-terminal("julia> module A; const x = 1; export x; end
+Main.A
+
+julia> using .A
+
+julia> f() = x
+f (generic function with 1 method)
+
+julia> for _ in false x end
+
+julia> const x = 2
+2
+
+julia> f()
+2
+", version: 1.12),
+  
+  julia-terminal("julia> module A; const x = 1; export x; end
+Main.A
+
+julia> using .A
+
+julia> f() = x
+f (generic function with 1 method)
+
+julia> while false x end
+
+julia> const x = 2
+2
+
+julia> f()
+2
+", version: 1.12),
+)
+
+#v(1em)
+#align(center)[
+  #text(size: 18pt, weight: "bold", fill: julia-green)[Binding resolution now dependes exclusively on the set of  definitions at access time!]
+]
+
+#pagebreak()
+
+= Julia 1.12: Binding Partition Kinds
+
+#align(center)[
+  #v(0.5em)
+  #table(
+    columns: (auto, 1fr),
+    stroke: (x, y) => (
+      left: if x > 0 { 1pt } else { 0pt },
+      right: 0pt,
+      top: if y == 0 { 2pt } else if y == 1 { 1pt } else { 0.5pt },
+      bottom: if y == 11 { 1pt } else { 0.5pt },
+    ),
+    fill: (x, y) => if y == 0 { julia-purple.lighten(85%) } else if calc.even(y) { gray.lighten(95%) } else { white },
+    align: (x, y) => if x == 0 { left } else { left },
+    inset: (x, y) => if y == 0 { 8pt } else { 6pt },
+    
+    [*Partition Kind*], [*Description*],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_CONST], 
+    [Constant declared using `const x = value` → restriction holds the constant value],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_CONST_IMPORT], 
+    [Constant declared using `import A` → restriction holds the constant value],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_GLOBAL], 
+    [Global variable declared via `global x::T` or assignment → restriction holds type],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_IMPLICIT_GLOBAL], 
+    [Global implicitly imported from `using`'d module → restriction holds imported binding],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_IMPLICIT_CONST], 
+    [Constant implicitly imported from `using`'d module → restriction holds constant value],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_EXPLICIT], 
+    [Explicitly `using`'d by name → restriction holds imported binding],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_IMPORTED], 
+    [Explicitly `import`'d by name → restriction holds imported binding],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_FAILED], 
+    [Failed import due to ambiguity → restriction is NULL],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_DECLARED], 
+    [Declared with `global` (weak, can be redefined) → restriction is NULL],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_GUARD], 
+    [Looked at but no global/import resolved → restriction is NULL],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_UNDEF_CONST], 
+    [Constant declared without value → restriction is NULL],
+    
+    text(font: "JuliaMono", size: 14pt)[PARTITION_KIND_BACKDATED_CONST], 
+    [Backdated constant for compatibility (warns on access) → like CONST],
+  )
+]
+
+= The `:latestworld` Mechanism
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 2em,
+  
+  block[
+    #text(size: 11pt, weight: "bold")[\@latestworld]
+    
+    #julia-terminal("julia> const x = 1
+1
+
+julia> get_const() = x
+get_const (generic function with 1 method)
+
+julia> begin
+           @show get_const()
+           Core.eval(@__MODULE__, :(const x = 2))
+           @show get_const()
+           Core.@latestworld
+           @show get_const()
+       end
+get_const() = 1
+get_const() = 1
+get_const() = 2
+2", version: "1.12")
+  ],
+  
+  block[
+    #text(size: 11pt, weight: "bold")[Statements that Raise World Age]
+    
+    #text(size: 10pt)[
+      The following raise the current world age:
+    ]
+    
+    #text(size: 9pt)[
+      #enum(
+        tight: true,
+        [An explicit invocation of `Core.@latestworld`],
+        [The start of every top-level statement],
+        [The start of every REPL prompt],
+        [Any type or struct definition],
+        [Any method definition],
+        [Any constant declaration],
+        [Any global variable declaration (but not a global variable assignment)],
+        [Any `using`, `import`, `export` or `public` statement],
+        [Certain other macros like `@eval` (depends on the macro implementation)],
+      )
+    ]
+    
+    #text(size: 10pt)[
+      These make all changes visible to the current task.
+    ]
+  ]
+)
+
+#pagebreak()
+
+#align(center + horizon)[
+  #text(size: 56pt, fill: julia-purple, weight: "bold")[
+    Thank You!
+  ]
+  
+  #v(2em)
+  
+  #text(size: 28pt, fill: gray)[
+    Questions?
+  ]
+  
+  #v(3em)
+  
+  #text(size: 20pt)[
+    Keno Fischer
+    
+    #link("mailto:keno@juliahub.com")[keno\@juliahub.com] • #box(baseline: 2pt)[#image("github-mark.svg", width: 16pt)] \@Keno
+  ]
+]
