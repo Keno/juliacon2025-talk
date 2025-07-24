@@ -36,6 +36,7 @@
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, node, edge
 #import "@preview/ansi-render:0.6.1": *
 #import "@preview/pinit:0.2.2": *
+#import "@preview/cades:0.3.0": qr-code
 
 // Define dark theme for terminal
 #let terminal-theme = (
@@ -96,27 +97,41 @@
 )
 
 // Title slide
-#align(center + horizon)[
-  #text(size: 42pt, fill: julia-purple, weight: "bold")[
-    Constants are no longer constant -\
-    what's up with that?
-  ]
-  
-  #v(2em)
-  
-  #text(size: 28pt)[JuliaCon 2025]
-  
-  #v(2em)
-  
-  #text(size: 24pt)[
-    Keno Fischer
-  ]
-  #v(0.1em)
-  #text(size: 8pt)[
-    Also Claude, but it wasn't very good at slides
-  ]
+= Constants are no longer constant - wat?
 
-]
+#grid(
+  columns: (4fr, 1fr),
+  column-gutter: 2em,
+  
+  align(center + horizon)[
+    #text(size: 42pt, fill: julia-purple, weight: "bold")[
+    ]
+    
+    #v(1.5em)
+    
+    #text(size: 28pt)[JuliaCon 2025]
+    
+    #v(1.5em)
+    
+    #text(size: 24pt)[
+      Keno Fischer
+    ]
+    #v(0.1em)
+    #text(size: 8pt)[
+      Also Claude, but it wasn't very good at slides
+    ]
+  ],
+  
+  align(center + horizon)[
+    #box(
+      width: 80pt,
+      height: 80pt,
+      qr-code("https://github.com/Keno/juliacon2025-talk", width: 80pt)
+    )
+    #v(0.2em)
+    #text(size: 9pt)[github.com/Keno/\juliacon2025-talk]
+  ]
+)
 
 #pagebreak()
 
@@ -408,11 +423,11 @@ end")
   columns: (1fr, 1fr),
   column-gutter: 2em,
   
-  julia-terminal("julia> unknown_var
-ERROR: UndefVarError: `unknown_var` 
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0munknown_var
+\u{1b}[91mERROR: \u{1b}[39mUndefVarError: `unknown_var` 
 not defined in `Main`
 
-julia> isdefined(Main, :unknown_var)
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0misdefined(Main, :unknown_var)
 false
 "),
   
@@ -506,10 +521,10 @@ false
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> const x = 1
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 1
 1
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 "),
   
@@ -538,10 +553,10 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> x = 1
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx = 1
 1
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 "),
   
@@ -568,10 +583,10 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> x::Int = 1
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx::Int = 1
 1
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 "),
   
@@ -601,11 +616,11 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> module A; const x = 1; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; end
 
-julia> import .A: x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mimport .A: x
   
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 "),
   
@@ -635,13 +650,13 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> module A; const x = 1; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; end
 
-julia> module B; import ..A: x; end
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule B; import ..A: x; end
   
-julia> import .B: x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mimport .B: x
   
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 "),
   
@@ -677,10 +692,10 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> global x
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mglobal x
 
-julia> x
-ERROR: UndefVarError: `x` not defined in `Main`
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
+\u{1b}[91mERROR: \u{1b}[39mUndefVarError: `x` not defined in `Main`
 "),
   
 diagram(
@@ -700,10 +715,10 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> global::Int x
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mglobal::Int x
 
-julia> x
-ERROR: UndefVarError: `x` not defined in `Main`
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
+\u{1b}[91mERROR: \u{1b}[39mUndefVarError: `x` not defined in `Main`
 "),
   
 diagram(
@@ -737,10 +752,10 @@ diagram(
   align: horizon,
   
   julia-terminal(
-"julia> module A; const x = 1;
+"\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1;
                  export x; end
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .A
 "),
   
 diagram(
@@ -766,12 +781,12 @@ diagram(
   align: horizon,
   
   julia-terminal(
-"julia> module A; const x = 1;
+"\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1;
                  export x; end
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .A
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 "),
   
 diagram(
@@ -799,34 +814,34 @@ Problem: When does binding resolution happen?
   column-gutter: 2em,
   align: horizon,
   
-julia-terminal("julia> module A; const x = 1; export x; end
+julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; export x; end
 Main.A
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .A
 
-julia> f() = x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mf() = x
 f (generic function with 1 method)
 
-julia> for _ in false x end
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mfor _ in false x end
 
-julia> const x = 2
-ERROR: cannot assign a value to imported variable A.x from module Main
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 2
+\u{1b}[91mERROR: \u{1b}[39mcannot assign a value to imported variable A.x from module Main
 Stacktrace:
  [1] top-level scope
    @ REPL[5]:1
 "),
   
-julia-terminal("julia> module A; const x = 1; export x; end
+julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; export x; end
 Main.A
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .A
 
-julia> f() = x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mf() = x
 f (generic function with 1 method)
 
-julia> while false x end
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mwhile false x end
 
-julia> const x = 2
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 2
 2
 "),
 )
@@ -940,10 +955,10 @@ end")
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> const x = 1
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 1
 1
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 ", version: 1.12),
   
@@ -965,10 +980,10 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> global x = 1
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mglobal x = 1
 1
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 ", version: 1.12),
   
@@ -992,13 +1007,13 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> const x = 1
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 1
 1
 
-julia> const x = 2
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 2
 2
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 2
 ", version: 1.12),
   
@@ -1027,11 +1042,11 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> module A; const x = 1; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; end
 
-julia> import .A: x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mimport .A: x
   
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 "),
   
@@ -1063,13 +1078,13 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> module A; const x = 1; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; end
 
-julia> module B; import ..A: x; end
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule B; import ..A: x; end
   
-julia> import .B: x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mimport .B: x
   
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 ", version: 1.12),
   
@@ -1113,11 +1128,16 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> module A; x = 1; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; x = 1; end
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule B
+           using ..A
+           export x
+       end
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .B
+
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 ", version: 1.12),
   
@@ -1130,20 +1150,30 @@ diagram(
  module-binding-def(module: <Main>, name: <Maindot>),
  module-using-def(module: <Main>, ypos: 45%, name: <Mainusing>),
  
- module-node(pos: (1,0), body: text[A], name: <A>),
- binding112-node(pos: (1,1), value: text[\#undef], name: <A-binding>),
- partition-node(pos: (1, 2), value: text[1], kind: text[GLOBAL], name: <A-part>),
+ module-node(pos: (1,0), body: text[B], name: <B>),
+ binding112-node(pos: (1,1), value: text[\#undef], name: <B-binding>),
+ partition-import-node(pos: (1, 2), kind: text(size: 11pt)[IMPLICIT_GLOBAL], name: <B-part>),
+ module-binding-def(module: <B>, name: <Bdot>),
+ module-using-def(module: <B>, ypos: 45%, name: <Busing>),
+ 
+ module-node(pos: (2,0), body: text[A], name: <A>),
+ binding112-node(pos: (2,1), value: text[\#undef], name: <A-binding>),
+ partition-node(pos: (2, 2), value: text[1], kind: text[GLOBAL], name: <A-part>),
  module-binding-def(module: <A>, name: <Adot>),
  
- edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
+ edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <B.west>), <B.west>, "-|>", layer: 1),
+ edge(<Busing.center>, (horizontal: <Busing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
  
  edge(<Maindot.center>, (rel: (0, 0.25), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
+ edge(<Bdot.center>, (rel: (0, 0.25), to: <Bdot.center>), (vertical: (), horizontal: <B-binding.south>), <B-binding.north>, "-|>", layer: 1),
  edge(<Adot.center>, (rel: (0, 0.25), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
  
  edge(<Main-binding-dot.center>, (rel: (0, 0.18), to: <Main-binding-dot.center>), (vertical: (), horizontal: <Main-part.north>), <Main-part.north>, "-|>", layer: 1),
+ edge(<B-binding-dot.center>, (rel: (0, 0.18), to: <B-binding-dot.center>), (vertical: (), horizontal: <B-part.north>), <B-part.north>, "-|>", layer: 1),
  edge(<A-binding-dot.center>, (rel: (0, 0.18), to: <A-binding-dot.center>), (vertical: (), horizontal: <A-part.north>), <A-part.north>, "-|>", layer: 1),
  
- edge(<Main-part-restriction-dot.center>, (rel: (0.5, 0), to: <Main-part-restriction-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
+ edge(<Main-part-restriction-dot.center>, "ddd", (rel: (1.5, 0), to: ()), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1),
+ edge(<B-part-restriction-dot.center>, (rel: (0.7, 0), to: <B-part-restriction-dot.center>), (horizontal: (), vertical: <A-binding.west>), <A-binding.west>, "-|>", layer: 1)
 ),
 )
 
@@ -1156,11 +1186,13 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> module A; const x = 1; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; end
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule B; const x = 1; end
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .A, .B
+
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 ", version: 1.12),
   
@@ -1171,20 +1203,29 @@ diagram(
  binding112-node(pos: (0,1), value: text[\#undef], name: <Main-binding>),
  partition-node(pos: (0, 2), value: text[1], kind: text(size: 11pt)[IMPLICIT_CONST], name: <Main-part>),
  module-binding-def(module: <Main>, name: <Maindot>),
- module-using-def(module: <Main>, ypos: 45%, name: <Mainusing>),
+ module-using-def(module: <Main>, ypos: 35%, name: <Mainusing1>),
+ module-using-def(module: <Main>, ypos: 55%, name: <Mainusing2>),
  
  module-node(pos: (1,0), body: text[A], name: <A>),
  binding112-node(pos: (1,1), value: text[\#undef], name: <A-binding>),
  partition-node(pos: (1, 2), value: text[1], kind: text[CONST], name: <A-part>),
  module-binding-def(module: <A>, name: <Adot>),
  
- edge(<Mainusing.center>, (horizontal: <Mainusing.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
+ module-node(pos: (2,0), body: text[B], name: <B>),
+ binding112-node(pos: (2,1), value: text[\#undef], name: <B-binding>),
+ partition-node(pos: (2, 2), value: text[1], kind: text[CONST], name: <B-part>),
+ module-binding-def(module: <B>, name: <Bdot>),
+ 
+ edge(<Mainusing1.center>, (horizontal: <Mainusing1.center>, vertical: <A.west>), <A.west>, "-|>", layer: 1),
+ edge(<Mainusing2.center>, (horizontal: <Mainusing2.center>, vertical: <B.west>), <B.west>, "-|>", layer: 1),
  
  edge(<Maindot.center>, (rel: (0, 0.25), to: <Maindot.center>), (vertical: (), horizontal: <Main-binding.south>), <Main-binding.north>, "-|>", layer: 1),
  edge(<Adot.center>, (rel: (0, 0.25), to: <Adot.center>), (vertical: (), horizontal: <A-binding.south>), <A-binding.north>, "-|>", layer: 1),
+ edge(<Bdot.center>, (rel: (0, 0.25), to: <Bdot.center>), (vertical: (), horizontal: <B-binding.south>), <B-binding.north>, "-|>", layer: 1),
  
  edge(<Main-binding-dot.center>, (rel: (0, 0.18), to: <Main-binding-dot.center>), (vertical: (), horizontal: <Main-part.north>), <Main-part.north>, "-|>", layer: 1),
  edge(<A-binding-dot.center>, (rel: (0, 0.18), to: <A-binding-dot.center>), (vertical: (), horizontal: <A-part.north>), <A-part.north>, "-|>", layer: 1),
+ edge(<B-binding-dot.center>, (rel: (0, 0.18), to: <B-binding-dot.center>), (vertical: (), horizontal: <B-part.north>), <B-part.north>, "-|>", layer: 1),
  
  // No import edge for IMPLICIT_CONST - it copies the value instead
 ),
@@ -1209,14 +1250,14 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> module A; global x; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; global x; end
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .A
 
-julia> Core.eval(A, :(const x = 1;))
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mCore.eval(A, :(const x = 1;))
 1
 
-julia> x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mx
 1
 ", version: 1.12),
   
@@ -1274,37 +1315,37 @@ diagram(
   column-gutter: 2em,
   align: horizon,
   
-  julia-terminal("julia> module A; const x = 1; export x; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; export x; end
 Main.A
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .A
 
-julia> f() = x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mf() = x
 f (generic function with 1 method)
 
-julia> for _ in false x end
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mfor _ in false x end
 
-julia> const x = 2
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 2
 2
 
-julia> f()
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mf()
 2
 ", version: 1.12),
   
-  julia-terminal("julia> module A; const x = 1; export x; end
+  julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mmodule A; const x = 1; export x; end
 Main.A
 
-julia> using .A
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0musing .A
 
-julia> f() = x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mf() = x
 f (generic function with 1 method)
 
-julia> while false x end
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mwhile false x end
 
-julia> const x = 2
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 2
 2
 
-julia> f()
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mf()
 2
 ", version: 1.12),
 )
@@ -1381,13 +1422,13 @@ julia> f()
   block[
     #text(size: 11pt, weight: "bold")[\@latestworld]
     
-    #julia-terminal("julia> const x = 1
+    #julia-terminal("\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mconst x = 1
 1
 
-julia> get_const() = x
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mget_const() = x
 get_const (generic function with 1 method)
 
-julia> begin
+\u{1b}[1m\u{1b}[32mjulia> \u{1b}[0m\u{1b}[0mbegin
            @show get_const()
            Core.eval(@__MODULE__, :(const x = 2))
            @show get_const()
